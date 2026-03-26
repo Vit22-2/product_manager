@@ -109,6 +109,8 @@ def register():
     
 @app.route("/logout")
 def logout():
+    #Forget user_id
     session.clear()
     
+    #Redirect to log in page
     return redirect("/")
