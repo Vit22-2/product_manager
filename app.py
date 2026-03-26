@@ -28,41 +28,81 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+@app.route("/")
+@login_required
+def index():
+    return render_template("index.html")
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
-    session.clear()
-
     # Forget any user_id
     session.clear()
 
-    # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        # Ensure username was submitted
-        if not request.form.get("username"):
-            flash("must provide username")
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-        # Ensure password was submitted
-        elif not request.form.get("password"):
-            flash("must provide password")
+        # 1. Ensure username and password were submitted
+        if not username:
+            flash("Must provide username")
+            return render_template("login.html")
 
-        # Query database for username
-        rows = db.execute(
-            "SELECT * FROM users WHERE username = ?", request.form.get("username")
-        )
+        if not password:
+            flash("Must provide password")
+            return render_template("login.html")
 
-        # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(
-            rows[0]["hash"], request.form.get("password")
-        ):
-            flash("invalid username and/or password")
+        # 2. Query database for username
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
 
-        # Remember which user has logged in
+        # 3. Ensure username exists AND password is correct
+        # This check prevents the IndexError because we return before accessing rows[0]
+        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], password):
+            flash("Invalid username and/or password")
+            return render_template("login.html")
+
+        # 4. Success: Remember which user has logged in
         session["user_id"] = rows[0]["id"]
 
         # Redirect user to home page
+        flash(f"Welcome back, {username}!")
         return redirect("/")
 
-    # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
+    
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirmation = request.form.get("confirmation")
+
+        # 1. Basic validation
+        if not username:
+            flash("Must provide username")
+            return render_template("register.html")
+            
+        if not password or not confirmation:
+            flash("Must provide password and confirmation")
+            return render_template("register.html")
+
+        if password != confirmation:
+            flash("Passwords do not match")
+            return render_template("register.html")
+
+        # 2. Check if username exists (using the CS50 library style)
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
+        if len(rows) != 0:
+            flash("Username already exists")
+            return render_template("register.html")
+
+        # 3. Insert new user
+        # Always hash the password before it touches the database!
+        hash = generate_password_hash(password)
+        db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", username, hash)
+
+        flash("Registered successfully! Please log in.")
+        return redirect("/login")
+    else:
+        return render_template("register.html")
