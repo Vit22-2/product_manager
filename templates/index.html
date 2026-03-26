@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main%}
+    {% if get_flashed_messages() %}
+            <div class="alert alert-primary m-0 text-center" role="alert">
+                {{get_flashed_messages()}}
+            </div>
+    {% endif %}
+    <div class="container py-5 text-center">
+        <table class="table">
+            <thead>
+                <th class="text-start">Product</th>
+                <th class="text-end">Units</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Selling Price</th>
+            </thead>
+        </table>
+    </div>
+{% endblock %}
