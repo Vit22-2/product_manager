@@ -103,7 +103,7 @@ def register():
         db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", username, hash)
 
         flash("Registered successfully! Please log in.")
-        return redirect("/login")
+        return render_template("login.html")
     else:
         return render_template("register.html")
     
@@ -111,6 +111,6 @@ def register():
 def logout():
     #Forget user_id
     session.clear()
-    
+
     #Redirect to log in page
     return redirect("/")

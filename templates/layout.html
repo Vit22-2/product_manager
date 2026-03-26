@@ -13,26 +13,22 @@
 
 </head>
 <body>
-    <nav class="bg-light border navbar navbar-expand-md navbar-light">
-        <div class="container-fluid">
-            <div class="navbar" id="navbar">
-                {% if session["user_id"] %}
-                <ul class="navbar-nav ms-auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="">Add</a></li>
-                    <li class="nav-item"><a class="nav-link" href="">Sell</a></li>
-                    <li class="nav-item"><a class="nav-link" href="">History</a></li>
-                </ul>
-                <ul class="navbar-nav ms-auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/">Logout</a></li>
-                {% else %}
-                <ul class="navbar-nav ms auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                </ul>
-                {% endif %}
-            </div>
-        </div>
+    <nav class="bg-light border navbar navbar-expand-md navbar-light px-2">
+            {% if session["user_id"] %}
+            <ul class="navbar-nav m-0">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="">Add</a></li>
+                <li class="nav-item"><a class="nav-link" href="">Sell</a></li>
+                <li class="nav-item"><a class="nav-link" href="">History</a></li>
+            </ul>
+            <ul class="navbar-nav m-0">
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+            {% else %}
+            <ul class="navbar-nav ms auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+            </ul>
+            {% endif %}
     </nav>
     <main class="container-fluid p-0 text-center">
             {% block main %}{% endblock %}
