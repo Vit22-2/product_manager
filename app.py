@@ -28,10 +28,43 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
-    return render_template("index.html")
+    id = session["user_id"]
+    #Insert product information
+    if request.method == "POST":
+        product = request.form.get("product")
+        cost = request.form.get("cost_price")
+        sell = request.form.get("selling_price")
+        units = request.form.get("units")
+        category = request.form.get("category") or "None"
+        
+        for val in [product, cost, sell, units]:
+            if not val:
+                flash("Please fill out all required fields.", "danger")
+                return redirect("/")
+        db.execute(
+            "INSERT INTO inventory (user_id, product_name, cost_price, selling_price, units, category) VALUES (?, ?, ?, ?, ?, ?)", id, product, cost, sell, units, category
+        )
+        flash(f"Added {product} to inventory", "success")
+        return redirect("/")
+    
+    # Render inventory table
+    inventory = []
+    inv = db.execute(
+        "SELECT * FROM inventory WHERE user_id = ?", id
+    )
+    for item in inv:
+        inventory.append({
+            "id": item["id"],
+            "product": item["product_name"],
+            "cost": usd(item["cost_price"]),
+            "sell": usd(item["selling_price"]),
+            "units": item["units"],
+            "category": item["category"]
+        })
+    return render_template("index.html", inventory=inventory)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -65,7 +98,7 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # Redirect user to home page
-        flash(f"Welcome back, {username}!")
+        flash(f"Welcome back, {username}!", "success")
         return redirect("/")
 
     else:
