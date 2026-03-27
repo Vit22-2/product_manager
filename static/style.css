@@ -1,0 +1,7 @@
+.navbar{
+    justify-content: space-between;
+}
+
+.container.d-flex{
+    gap: 1rem;
+}
