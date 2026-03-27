@@ -5,19 +5,51 @@
 {% endblock %}
 
 {% block main%}
-    {% if get_flashed_messages() %}
-            <div class="alert alert-success m-0 text-center" role="alert">
-                {{get_flashed_messages()}}
+    <form action="/" method="post">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} m-0 text-center" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="container py-3 mt-5 d-flex justify-content-between">
+            <div class="container d-flex">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="product" placeholder="Product" type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="cost_price" placeholder="Cost" type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="selling_price" placeholder="Price" type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="units" placeholder="Units" type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="category" placeholder="Category" type="text">
             </div>
-    {% endif %}
-    <div class="container py-5 text-center">
-        <table class="table">
-            <thead>
-                <th class="text-start">Product</th>
-                <th class="text-end">Units</th>
-                <th class="text-end">Price</th>
-                <th class="text-end">Selling Price</th>
-            </thead>
-        </table>
-    </div>
+            <div class="container p-0 d-flex">
+                <button class="btn btn-primary" type="submit">Enter</button>
+            </div>
+        </div>
+        <div class="container py-5">
+            <table class="table table-hover">
+                <thead>
+                    <th class="text-start">#</th>
+                    <th class="text-start">Product</th>
+                    <th class="text-start">Cost</th>
+                    <th class="text-start">Selling Price</th>
+                    <th class="text-start">Units</th>
+                    <th class="text-start">Category</th>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% for item in inventory %}
+                        <tr>
+                            <th class="text-start">{{item.id}}</th>
+                            <td class="text-start">{{item.product}}</td>
+                            <td class="text-start">{{item.cost}}</td>
+                            <td class="text-start">{{item.sell}}</td>
+                            <td class="text-start">{{item.units}}</td>
+                            <td class="text-start">{{item.category}}</td>                       
+                        </tr>
+                    {% endfor%}
+                </tbody>
+            </table>
+        </div>
+    </form>
 {% endblock %}
