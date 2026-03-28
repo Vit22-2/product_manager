@@ -34,7 +34,7 @@ def index():
     id = session["user_id"]
     #Insert product information
     if request.method == "POST":
-        product = request.form.get("product")
+        product = request.form.get("product").strip().title()
         cost = request.form.get("cost_price")
         sell = request.form.get("selling_price")
         units = request.form.get("units")
@@ -44,11 +44,27 @@ def index():
             if not val:
                 flash("Please fill out all required fields.", "danger")
                 return redirect("/")
-        db.execute(
-            "INSERT INTO inventory (user_id, product_name, cost_price, selling_price, units, category) VALUES (?, ?, ?, ?, ?, ?)", id, product, cost, sell, units, category
+
+        existing_item = db.execute(
+            "SELECT id, units FROM inventory WHERE user_id = ? AND product_name = ? AND cost_price = ?", id, product, cost
         )
-        flash(f"Added {product} to inventory", "success")
-        return redirect("/")
+        if existing_item:
+            # 2. Update existing row
+            new_total = existing_item[0]["units"] + int(units)
+            db.execute(
+                "UPDATE inventory SET units = ? WHERE id = ?",
+                new_total, existing_item[0]["id"]
+            )
+            flash(f"Added {product} to inventory!", "success")
+
+        else:
+            # 3. Insert as new row (your existing code)
+            db.execute(
+                "INSERT INTO inventory (user_id, product_name, cost_price, selling_price, units, category) VALUES (?, ?, ?, ?, ?, ?)",
+                id, product, cost, sell, units, category
+            )
+            flash(f"Added {product} to inventory!", "success")
+        redirect("/")
     
     # Render inventory table
     inventory = []
