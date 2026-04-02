@@ -27,6 +27,7 @@
                 <button class="btn btn-primary" type="submit">Enter</button>
             </div>
         </div>
+    </form>
         <div class="container py-5">
             <table class="table table-hover">
                 <thead>
@@ -34,22 +35,30 @@
                     <th class="text-start">Product</th>
                     <th class="text-start">Cost</th>
                     <th class="text-start">Selling Price</th>
-                    <th class="text-start">Units</th>
-                    <th class="text-start">Category</th>
+                    <th class="text-center">Units</th>
+                    <th class="text-center">Category</th>
                 </thead>
-                <tbody class="table-group-divider">
+                <tbody class="table-group-divider container">
                     {% for item in inventory %}
                         <tr>
                             <th class="text-start">{{item.id}}</th>
                             <td class="text-start">{{item.product}}</td>
                             <td class="text-start">{{item.cost}}</td>
                             <td class="text-start">{{item.sell}}</td>
-                            <td class="text-start">{{item.units}}</td>
-                            <td class="text-start">{{item.category}}</td>                       
+                            <td class="text-center">{{item.units}}</td>
+                            <td class="text-center">{{item.category}}</td>                       
+                            <td class="text-start">
+                                <div class="action-buttons">
+                                    <a href="/edit/{{ item.id }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                                    <form action="/delete" method="post" style="display:inline;">
+                                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                     {% endfor%}
                 </tbody>
             </table>
         </div>
-    </form>
 {% endblock %}

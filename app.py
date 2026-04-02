@@ -31,7 +31,7 @@ def after_request(response):
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
-    id = session["user_id"]
+    user_id = session["user_id"]
     #Insert product information
     if request.method == "POST":
         product = request.form.get("product").strip().title()
@@ -46,7 +46,7 @@ def index():
                 return redirect("/")
 
         existing_item = db.execute(
-            "SELECT id, units FROM inventory WHERE user_id = ? AND product_name = ? AND cost_price = ?", id, product, cost
+            "SELECT id, units FROM inventory WHERE user_id = ? AND product_name = ? AND cost_price = ?", user_id, product, cost
         )
         if existing_item:
             # 2. Update existing row
@@ -61,7 +61,7 @@ def index():
             # 3. Insert as new row (your existing code)
             db.execute(
                 "INSERT INTO inventory (user_id, product_name, cost_price, selling_price, units, category) VALUES (?, ?, ?, ?, ?, ?)",
-                id, product, cost, sell, units, category
+                user_id, product, cost, sell, units, category
             )
             flash(f"Added {product} to inventory!", "success")
         redirect("/")
@@ -69,7 +69,7 @@ def index():
     # Render inventory table
     inventory = []
     inv = db.execute(
-        "SELECT * FROM inventory WHERE user_id = ?", id
+        "SELECT * FROM inventory WHERE user_id = ?", user_id
     )
     for item in inv:
         inventory.append({
@@ -163,3 +163,15 @@ def logout():
 
     #Redirect to log in page
     return redirect("/")
+
+@app.route("/delete", methods=["POST"])
+@login_required
+def delete():
+    item_id = request.form.get("item_id")
+    user_id = session["user_id"]
+    
+    if item_id:
+        # Ensure the item belongs to the logged-in user before deleting!
+        db.execute("DELETE FROM inventory WHERE id = ? AND user_id = ?", item_id, user_id)
+        flash("Item removed from inventory.", "success")
+        return redirect("/")

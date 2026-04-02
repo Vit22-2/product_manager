@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}
+    Sales
+{% endblock %}
+
+{% block main %}
+    <form action="/sales" method="post">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} m-0 text-center" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="container py-3 mt-5 d-flex justify-content-between">
+            <div class="container d-flex">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="" placeholder="Product" type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="cost_price" placeholder="Cost" type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="selling_price" placeholder="Price" type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="units" placeholder="Units" type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="category" placeholder="Category" type="text">
+            </div>
+            <div class="container p-0 d-flex">
+                <button class="btn btn-primary" type="submit">Enter</button>
+            </div>
+        </div>
+    </form>
+{% endblock%}
