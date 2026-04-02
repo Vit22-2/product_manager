@@ -18,3 +18,8 @@
 tr:hover .action-buttons {
     opacity: 1;
 }
+
+.edit-mode {
+    display: flex;
+    gap: 0.5rem;
+}

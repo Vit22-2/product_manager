@@ -64,7 +64,7 @@ def index():
                 user_id, product, cost, sell, units, category
             )
             flash(f"Added {product} to inventory!", "success")
-        redirect("/")
+        return redirect("/")
     
     # Render inventory table
     inventory = []
@@ -77,6 +77,8 @@ def index():
             "product": item["product_name"],
             "cost": usd(item["cost_price"]),
             "sell": usd(item["selling_price"]),
+            "cost_raw": item["cost_price"],
+            "sell_raw": item["selling_price"],
             "units": item["units"],
             "category": item["category"]
         })
@@ -175,3 +177,15 @@ def delete():
         db.execute("DELETE FROM inventory WHERE id = ? AND user_id = ?", item_id, user_id)
         flash("Item removed from inventory.", "success")
         return redirect("/")
+    
+@app.route("/edit_inplace", methods=["POST"])
+@login_required
+def edit_inplace():
+    data = request.get_json()
+    
+    db.execute(
+        "UPDATE inventory SET product_name = ?, cost_price = ?, selling_price = ?, units = ?, category = ?WHERE id = ? AND user_id = ?",
+        data['product'], data['cost_price'], data['selling_price'], data['units'], data['category'], data['id'], session["user_id"]
+    )
+    
+    return {"success": True}, 200

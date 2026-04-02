@@ -13,6 +13,44 @@
 
 </head>
 <body>
+    <script>
+        function toggleEdit(id) {
+            const row = document.getElementById(`row-${id}`);
+            const viewElements = row.querySelectorAll('.view-mode');
+            const editElements = row.querySelectorAll('.edit-mode');
+
+            viewElements.forEach(el => el.classList.toggle('d-none'));
+            editElements.forEach(el => el.classList.toggle('d-none'));
+        }
+
+        async function saveEdit(id) {
+            const row = document.getElementById(`row-${id}`);
+            
+            // Collect data from the input boxes in that specific row
+            const data = {
+                id: id,
+                product: row.querySelector('input[name="product"]').value,
+                cost_price: row.querySelector('input[name="cost_price"]').value,
+                selling_price: row.querySelector('input[name="selling_price"]').value,
+                units: row.querySelector('input[name="units"]').value,
+                category: row.querySelector('input[name="category"]').value
+            };
+
+            // Send to Flask
+            const response = await fetch('/edit_inplace', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                window.location.reload(); // Refresh to show new formatted data
+            } else {
+                alert("Failed to save changes.");
+            }
+        }
+    </script>
+
     <nav class="bg-light border navbar navbar-expand-md px-2">
             {% if session["user_id"] %}
             <ul class="navbar-nav m-0">
@@ -29,7 +67,7 @@
             {% endif %}
     </nav>
     <main class="container-fluid p-0 text-center">
-            {% block main %}{% endblock %}
-        </main>
+        {% block main %}{% endblock %}
+    </main>
 </body>
 </html>

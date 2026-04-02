@@ -40,20 +40,41 @@
                 </thead>
                 <tbody class="table-group-divider container">
                     {% for item in inventory %}
-                        <tr>
+                        <tr id="row-{{ item.id }}">
                             <th class="text-start">{{item.id}}</th>
-                            <td class="text-start">{{item.product}}</td>
-                            <td class="text-start">{{item.cost}}</td>
-                            <td class="text-start">{{item.sell}}</td>
-                            <td class="text-center">{{item.units}}</td>
-                            <td class="text-center">{{item.category}}</td>                       
+
                             <td class="text-start">
-                                <div class="action-buttons">
-                                    <a href="/edit/{{ item.id }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                                <span class="view-mode">{{item.product}}</span>
+                                <input type="text" class="form-control form-control-sm edit-mode d-none" name="product" value="{{item.product}}">
+                            </td>
+                            <td class="text-start">
+                                <span class="view-mode">{{item.cost}}</span>
+                                <input type="text" class="form-control form-control-sm edit-mode d-none" name="cost_price" value="{{item.cost_raw}}">
+                            </td>
+                            <td class="text-start">
+                                <span class="view-mode">{{item.sell}}</span>
+                                <input type="text" class="form-control form-control-sm edit-mode d-none" name="selling_price" value="{{item.sell_raw}}">
+                            </td>
+                            <td class="text-center">
+                                <span class="view-mode">{{item.units}}</span>
+                                <input type="text" class="form-control form-control-sm edit-mode d-none" name="units" value="{{item.units}}">
+                            </td>
+                            <td class="text-center">
+                                <span class="view-mode">{{item.category}}</span>
+                                <input type="text" class="form-control form-control-sm edit-mode d-none" name="category" value="{{item.category}}">
+                            </td>                       
+                            <td class="text-start">
+                                <div class="view-mode action-buttons">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="toggleEdit('{{ item.id }}')">Edit</button>
                                     <form action="/delete" method="post" style="display:inline;">
                                         <input type="hidden" name="item_id" value="{{ item.id }}">
                                         <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                                     </form>
+                                </div>
+
+                                <div class="edit-mode d-none">
+                                    <button class="btn btn-sm btn-success" onclick="saveEdit('{{ item.id }}')">Save</button>
+                                    <button class="btn btn-sm btn-danger" onclick="toggleEdit('{{ item.id }}')">Discard</button>
                                 </div>
                             </td>
                         </tr>
