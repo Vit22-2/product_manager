@@ -1,3 +1,4 @@
 cs50
 Flask
 flask_session
+requests
