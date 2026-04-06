@@ -18,7 +18,7 @@
 
 ```
 https://github.com/Vit22-2/product_manager.git
-cd store-manager
+cd product-manager
 ```
 
 ### Install dependencies
