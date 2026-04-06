@@ -1,30 +1,30 @@
 {% extends "layout.html" %}
+
 {% block title %}
     Sales
 {% endblock %}
 
 {% block main %}
-    <form action="/sales" method="post">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} m-0 text-center" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <div class="container py-3 mt-5 d-flex justify-content-between">
-            <div class="container d-flex">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="" placeholder="Product" type="text">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="cost_price" placeholder="Cost" type="text">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="selling_price" placeholder="Price" type="text">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="units" placeholder="Units" type="text">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="category" placeholder="Category" type="text">
-            </div>
-            <div class="container p-0 d-flex">
-                <button class="btn btn-primary" type="submit">Enter</button>
-            </div>
-        </div>
-    </form>
-{% endblock%}
+    <div class="container py-5 px-5">
+        <table class="table table-hover">
+            <thead>
+                <th class="text-start">Date</th>
+                <th class="text-start">Product</th>
+                <th class="text-start">Sold Price</th>
+                <th class="text-center">Units</th>
+                <th class="text-center">Profit</th>
+            </thead>
+            <tbody class="table-group-divider container">
+                {% for sale in sales%}
+                    <tr>
+                        <td class="text-start">{{ sale.date }}</td>
+                        <td class="text-start">{{ sale.product }}</td>
+                        <td class="text-start">{{ sale.sell_price }}</td>
+                        <td class="text-center">{{ sale.units }}</td>
+                        <td class="text-center">{{ sale.profit }}</td>
+                    </tr>
+                {% endfor %}   
+            </tbody>
+        </table>
+    </div>
+{% endblock %} 

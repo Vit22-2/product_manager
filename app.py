@@ -184,8 +184,61 @@ def edit_inplace():
     data = request.get_json()
     
     db.execute(
-        "UPDATE inventory SET product_name = ?, cost_price = ?, selling_price = ?, units = ?, category = ?WHERE id = ? AND user_id = ?",
+        "UPDATE inventory SET product_name = ?, cost_price = ?, selling_price = ?, units = ?, category = ? WHERE id = ? AND user_id = ?",
         data['product'], data['cost_price'], data['selling_price'], data['units'], data['category'], data['id'], session["user_id"]
     )
     
     return {"success": True}, 200
+
+@app.route("/sell_custom", methods=["POST"])
+@login_required
+def sell_custom():
+    data = request.get_json()
+    user_id = session["user_id"]
+    dnt = datetime.datetime.now()
+    
+    # Fetch original item to get cost_price and check stock
+    item = db.execute("SELECT * FROM inventory WHERE id = ? AND user_id = ?", data['item_id'], user_id)
+    
+    if not item or item[0]['units'] < int(data['units_sold']):
+        return {"success": False, "message": "Not enough stock!"}, 400
+
+    # 1. Update Inventory (Decrement units)
+    db.execute(
+        "UPDATE inventory SET units = units - ? WHERE id = ?",
+        data['units_sold'], data['item_id']
+    )
+
+    # 2. Record the specific sale (using the custom price!)
+    db.execute(
+        "INSERT INTO sales (user_id, product_id, product_name, sell_price, cost_price, units_sold, datetime) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        user_id, data["item_id"], item[0]["product_name"], data['sell_price'], item[0]["cost_price"], data['units_sold'], dnt.strftime("%d-%b-%Y %I:%M%p")
+    )
+
+    return {"success": True}, 200
+
+@app.route("/sales")
+@login_required
+def sales():
+    user_id = session["user_id"]
+    rows = db.execute(
+        "SELECT * FROM sales WHERE user_id = ?", user_id
+    )
+    
+    total_revenue = 0
+    total_profit = 0
+    
+    sales = []
+    for row in rows:
+        profit = (row["sell_price"] - row["cost_price"]) * row["units_sold"]
+        total_revenue += row["sell_price"] * row["units_sold"]
+        total_profit += profit
+        
+        sales.append({
+            "product": row["product_name"],
+            "sell_price": usd(row["sell_price"]),
+            "profit": usd(profit),
+            "units": row["units_sold"],
+            "date": row["datetime"]
+        })
+    return render_template("sales.html", sales=sales, revenue=usd(total_revenue), profit=usd(total_profit))

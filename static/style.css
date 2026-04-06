@@ -6,10 +6,6 @@
     gap: 1rem;
 }
 
-.text-start {
-    width: 8rem;
-}
-
 .action-buttons {
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
@@ -19,7 +15,8 @@ tr:hover .action-buttons {
     opacity: 1;
 }
 
-.edit-mode {
+.edit-mode, sell-mode {
     display: flex;
     gap: 0.5rem;
+    justify-content: end;
 }

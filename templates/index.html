@@ -4,7 +4,7 @@
     Home
 {% endblock %}
 
-{% block main%}
+{% block main %}
     <form action="/" method="post">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -44,28 +44,29 @@
                             <th class="text-start">{{item.id}}</th>
 
                             <td class="text-start">
-                                <span class="view-mode">{{item.product}}</span>
+                                <span class="view-mode-edit">{{item.product}}</span>
                                 <input type="text" class="form-control form-control-sm edit-mode d-none" name="product" value="{{item.product}}">
                             </td>
                             <td class="text-start">
-                                <span class="view-mode">{{item.cost}}</span>
+                                <span class="view-mode-edit">{{item.cost}}</span>
                                 <input type="text" class="form-control form-control-sm edit-mode d-none" name="cost_price" value="{{item.cost_raw}}">
                             </td>
                             <td class="text-start">
-                                <span class="view-mode">{{item.sell}}</span>
-                                <input type="text" class="form-control form-control-sm edit-mode d-none" name="selling_price" value="{{item.sell_raw}}">
+                                <span class="view-mode-edit view-mode-sell">{{item.sell}}</span>
+                                <input type="text" class="form-control form-control-sm edit-mode sell-mode d-none" name="selling_price" value="{{item.sell_raw}}">
                             </td>
                             <td class="text-center">
-                                <span class="view-mode">{{item.units}}</span>
-                                <input type="text" class="form-control form-control-sm edit-mode d-none" name="units" value="{{item.units}}">
+                                <span class="view-mode-edit view-mode-sell">{{item.units}}</span>
+                                <input type="text" class="form-control form-control-sm edit-mode sell-mode d-none" name="units" value="{{item.units}}">
                             </td>
                             <td class="text-center">
-                                <span class="view-mode">{{item.category}}</span>
+                                <span class="view-mode-edit">{{item.category}}</span>
                                 <input type="text" class="form-control form-control-sm edit-mode d-none" name="category" value="{{item.category}}">
                             </td>                       
-                            <td class="text-start">
-                                <div class="view-mode action-buttons">
+                            <td class="text-end w-25">
+                                <div class="view-mode-edit view-mode-sell action-buttons">
                                     <button class="btn btn-sm btn-outline-primary" onclick="toggleEdit('{{ item.id }}')">Edit</button>
+                                    <button class="btn btn-sm btn-outline-success" onclick="toggleSell('{{ item.id }}')">Sell</button>
                                     <form action="/delete" method="post" style="display:inline;">
                                         <input type="hidden" name="item_id" value="{{ item.id }}">
                                         <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
@@ -75,6 +76,11 @@
                                 <div class="edit-mode d-none">
                                     <button class="btn btn-sm btn-success" onclick="saveEdit('{{ item.id }}')">Save</button>
                                     <button class="btn btn-sm btn-danger" onclick="toggleEdit('{{ item.id }}')">Discard</button>
+                                </div>
+
+                                <div class="sell-mode d-none">
+                                    <button class="btn btn-sm btn-success" onclick="confirmSell('{{ item.id }}')">Confirm Sale</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="toggleSell('{{ item.id }}')">Cancel</button>
                                 </div>
                             </td>
                         </tr>
