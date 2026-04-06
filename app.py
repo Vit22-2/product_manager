@@ -171,10 +171,14 @@ def logout():
 def delete():
     item_id = request.form.get("item_id")
     user_id = session["user_id"]
-
-    
-    db.execute("DELETE FROM inventory WHERE id = ? AND user_id = ?", item_id, user_id)
-    flash("Item removed from inventory.", "success")
+    try:
+        # Attempt to delete the item
+        db.execute("DELETE FROM inventory WHERE id = ? AND user_id = ?", item_id, user_id)
+        flash("Item deleted successfully!", "success")
+        
+    except ValueError:
+        # This block runs ONLY if the 'FOREIGN KEY constraint failed' error occurs
+        flash("Cannot delete this item because it has associated sales records.", "danger")
     return redirect("/")
     
 @app.route("/edit_inplace", methods=["POST"])
