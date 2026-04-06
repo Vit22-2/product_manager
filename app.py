@@ -82,7 +82,7 @@ def index():
             "units": item["units"],
             "category": item["category"]
         })
-    return render_template("index.html", inventory=inventory)
+    return render_template("layout.html", inventory=inventory)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -97,10 +97,10 @@ def login():
         # 1. Ensure username and password were submitted
         if not username:
             flash("Must provide username")
-            return render_template("login.html")
+            return render_template("login.html", "danger")
 
         if not password:
-            flash("Must provide password")
+            flash("Must provide password", "danger")
             return render_template("login.html")
 
         # 2. Query database for username
@@ -109,7 +109,7 @@ def login():
         # 3. Ensure username exists AND password is correct
         # This check prevents the IndexError because we return before accessing rows[0]
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], password):
-            flash("Invalid username and/or password")
+            flash("Invalid username and/or password", "danger")
             return render_template("login.html")
 
         # 4. Success: Remember which user has logged in
@@ -131,21 +131,21 @@ def register():
 
         # 1. Basic validation
         if not username:
-            flash("Must provide username")
+            flash("Must provide username", "danger")
             return render_template("register.html")
             
         if not password or not confirmation:
-            flash("Must provide password and confirmation")
+            flash("Must provide password and confirmation", "danger")
             return render_template("register.html")
 
         if password != confirmation:
-            flash("Passwords do not match")
+            flash("Passwords do not match", "danger")
             return render_template("register.html")
 
         # 2. Check if username exists (using the CS50 library style)
         rows = db.execute("SELECT * FROM users WHERE username = ?", username)
         if len(rows) != 0:
-            flash("Username already exists")
+            flash("Username already exists", "danger")
             return render_template("register.html")
 
         # 3. Insert new user
@@ -153,7 +153,7 @@ def register():
         hash = generate_password_hash(password)
         db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", username, hash)
 
-        flash("Registered successfully! Please log in.")
+        flash("Registered successfully! Please log in.", "success")
         return render_template("login.html")
     else:
         return render_template("register.html")
@@ -171,12 +171,11 @@ def logout():
 def delete():
     item_id = request.form.get("item_id")
     user_id = session["user_id"]
+
     
-    if item_id:
-        # Ensure the item belongs to the logged-in user before deleting!
-        db.execute("DELETE FROM inventory WHERE id = ? AND user_id = ?", item_id, user_id)
-        flash("Item removed from inventory.", "success")
-        return redirect("/")
+    db.execute("DELETE FROM inventory WHERE id = ? AND user_id = ?", item_id, user_id)
+    flash("Item removed from inventory.", "success")
+    return redirect("/")
     
 @app.route("/edit_inplace", methods=["POST"])
 @login_required

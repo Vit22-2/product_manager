@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "index.html" %}
 
 {% block title %}
     Register
@@ -6,11 +6,15 @@
 
 {% block main %}
     <form action="/register" method="post">
-        {% if get_flashed_messages() %}
-            <div class="alert alert-danger mb-0 text-center" role="alert">
-                {{get_flashed_messages()}}
-            </div>
-        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} m-0 text-center" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <div class="container py-5 text-center">
             <div class="mb-3">
                 <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
