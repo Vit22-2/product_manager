@@ -17,7 +17,7 @@
 ### Clone repository
 
 ```
-https://github.com/Vit22-2/product_manager
+https://github.com/Vit22-2/product_manager.git
 cd store-manager
 ```
 
