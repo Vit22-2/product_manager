@@ -91,3 +91,17 @@ function filterTable() {
         }
     }
 }
+
+function changeDate(days) {
+    const datePicker = document.getElementById('datePicker');
+    let currentDate = new Date(datePicker.value);
+    
+    // Add or subtract the days
+    currentDate.setDate(currentDate.getDate() + days);
+    
+    // Format back to YYYY-MM-DD for the input
+    const newDate = currentDate.toISOString().split('T')[0];
+    
+    // Redirect to the new filtered URL
+    window.location.href = "/sales?date=" + newDate;
+}

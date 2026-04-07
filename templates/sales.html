@@ -10,6 +10,15 @@
             <thead>
                 <th class="text-start">Date</th>
                 <th class="text-start">Product</th>
+                <div class="d-flex justify-content-center align-items-center my-3">
+                    <button class="btn btn-outline-secondary btn-sm me-3" onclick="changeDate(-1)">&lt;</button>
+                    <div class="fw-bold fs-5">
+                        <input type="date" id="datePicker" value="{{ current_date }}" 
+                            onchange="window.location.href='/sales?date=' + this.value"
+                            style="border:none; background:transparent; font-weight:bold;">
+                    </div>
+                    <button class="btn btn-outline-secondary btn-sm ms-3" onclick="changeDate(1)">&gt;</button>
+                </div>
                 <th class="text-start">Sold Price</th>
                 <th class="text-center">Units</th>
                 <th class="text-center">Profit</th>

@@ -1,5 +1,5 @@
 import os
-import datetime
+from datetime import datetime, date
 from cs50 import SQL
 from flask import Flask, flash, render_template, redirect, session, request
 from flask_session import Session
@@ -224,24 +224,27 @@ def sell_custom():
 @login_required
 def sales():
     user_id = session["user_id"]
+    selected_date = request.args.get("date") or date.today().isoformat()
+    date_obj = datetime.strptime(selected_date, "%Y-%m-%d")
+    formatted_date_query = date_obj.strftime("%d-%b-%Y") + "%"
     rows = db.execute(
-        "SELECT * FROM sales WHERE user_id = ? ORDER BY datetime DESC", user_id
+        "SELECT * FROM sales WHERE user_id = ? AND datetime LIKE ? ORDER BY datetime DESC", user_id, formatted_date_query
     )
     
     total_revenue = 0
     total_profit = 0
     
-    sales = []
+    sales_list = []
     for row in rows:
         profit = (row["sell_price"] - row["cost_price"]) * row["units_sold"]
         total_revenue += row["sell_price"] * row["units_sold"]
         total_profit += profit
         
-        sales.append({
+        sales_list.append({
             "product": row["product_name"],
             "sell_price": usd(row["sell_price"]),
             "profit": usd(profit),
             "units": row["units_sold"],
             "date": row["datetime"]
         })
-    return render_template("sales.html", sales=sales, revenue=usd(total_revenue), profit=usd(total_profit))
+    return render_template("sales.html", sales=sales_list, revenue=usd(total_revenue), profit=usd(total_profit), current_date=selected_date)
