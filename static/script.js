@@ -65,3 +65,29 @@ async function confirmSell(id) {
         alert(error.message || "Sale failed.");
     }
 }
+
+function filterTable() {
+    // Get the search input and the table rows
+    const input = document.getElementById("tableSearch");
+    const filter = input.value.toUpperCase();
+    const table = document.querySelector(".table tbody");
+    const tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows and hide those that don't match the search query
+    for (let i = 0; i < tr.length; i++) {
+        // Look at the Product Name (column 2) and Category (column 6)
+        const productName = tr[i].getElementsByTagName("td")[0];
+        const category = tr[i].getElementsByTagName("td")[4];
+        
+        if (productName || category) {
+            const txtValue = (productName.textContent || productName.innerText) + 
+                             (category.textContent || category.innerText);
+            
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}

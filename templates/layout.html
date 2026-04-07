@@ -37,6 +37,11 @@
                     <th class="text-start">Selling Price</th>
                     <th class="text-center">Units</th>
                     <th class="text-center">Category</th>
+                    <th class="text-end">
+                        <div class="input-group input-group-sm" style="max-width: 20rem; float: right;">
+                            <input type="text" id="tableSearch" class="form-control" placeholder="Search products..." onkeyup="filterTable()">
+                        </div>
+                    </th>
                 </thead>
                 <tbody class="table-group-divider container">
                     {% for item in inventory %}
