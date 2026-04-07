@@ -225,7 +225,7 @@ def sell_custom():
 def sales():
     user_id = session["user_id"]
     rows = db.execute(
-        "SELECT * FROM sales WHERE user_id = ?", user_id
+        "SELECT * FROM sales WHERE user_id = ? ORDER BY datetime DESC", user_id
     )
     
     total_revenue = 0
