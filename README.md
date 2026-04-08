@@ -38,6 +38,8 @@ flask run
 - Add Items: use the input bar to add your initial stock.
   
 - Edit In-Place: edit to change details instantly.
+
+#### Video Demo:  https://youtu.be/FvyCWQnAhQE
   
 - Make a Sale: sell and adjust the price if you gave the customer a discount, and hit confirm.
   
