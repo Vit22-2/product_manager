@@ -17,8 +17,8 @@
 ### Clone repository
 
 ```
-https://github.com/Vit22-2/product_manager.git
-cd product-manager
+git clone https://github.com/Vit22-2/product_manager.git
+cd product_manager
 ```
 
 ### Install dependencies
