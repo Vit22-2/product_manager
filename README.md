@@ -12,11 +12,14 @@ The Product Manager is a full-stack web application designed to help small busin
 The core of the application is built using the Flask framework. I utilized the cs50 SQL library to interact with an SQLite database (finance.db). The database is structured with three primary tables: users, inventory, and sales.
 
 - Users Table: Handles authentication and password hashing using werkzeug.security.
+  
 - Inventory Table: Stores product details including cost, selling price, and stock levels. It uses a user_id foreign key to ensure data privacy.
+  
 - Sales Table: Records every transaction. A key technical challenge was handling Foreign Key constraints. If a user tries to delete an inventory item that is linked to a sale, the system catches the ValueError and prevents the deletion, ensuring the financial history remains accurate.
   
 ### The Frontend (JavaScript & Bootstrap)
 - To provide a modern user experience, I implemented an in-place editing button. When a user clicks "Edit," the table row transforms into input fields. Upon saving, a JavaScript fetch() request sends the data to a Flask API route. This allows the UI to update without a full page refresh.
+  
 - I also added a Dynamic Search Filter in the table header. This script scans the "Product" and "Category" columns in real-time as the user types, hiding rows that don't match the query. This is particularly useful for users with large inventories.
 
 ## Features
@@ -62,3 +65,14 @@ flask run
   
 - View Profits: navigate to the Sales tab to see your total earnings and a breakdown of every transaction.
 
+## File Structure
+
+app.py: Contains the main application logic and all route handlers.
+
+helpers.py: Includes the login decorator and currency formatting function.
+
+static/: Contains the CSS for styling and custom hover effects.
+
+templates/: Contains all Jinja2 HTML templates, including the modular layout.html.
+
+finance.db: The SQLite database storing all persistent information.
