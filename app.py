@@ -198,7 +198,7 @@ def edit_inplace():
 def sell_custom():
     data = request.get_json()
     user_id = session["user_id"]
-    dnt = datetime.datetime.now()
+    dnt = datetime.now()
     
     # Fetch original item to get cost_price and check stock
     item = db.execute("SELECT * FROM inventory WHERE id = ? AND user_id = ?", data['item_id'], user_id)
